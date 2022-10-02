@@ -1,10 +1,12 @@
 import NavBar from "../components/NavBar";
 
-export default function Home() {
+const About: React.FC = () => {
   return (
     <div>
       <NavBar />
-      <h1>Hello</h1>
+      <h1>About</h1>
     </div>
   );
-}
+};
+
+export default About;
