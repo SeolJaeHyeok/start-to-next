@@ -1,11 +1,12 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import HeadTitle from "../components/HeadTitle";
 
 export default function Home({ movieData }) {
   const router = useRouter();
 
-  const handleMovieClick = (movieId: string) => {
-    router.push(`/movies/${movieId}`);
+  const handleMovieClick = (title: string, movieId: string) => {
+    router.push(`/movies/${title}/${movieId}`);
   };
   return (
     <div className='container'>
@@ -13,12 +14,16 @@ export default function Home({ movieData }) {
       {!movieData && <h4>Loading...</h4>}
       {movieData?.map((movie) => (
         <div
-          onClick={() => handleMovieClick(movie.id)}
+          onClick={() => handleMovieClick(movie.original_title, movie.id)}
           className='movie'
           key={movie.id}
         >
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          <h4>{movie.title}</h4>
+          <h4>
+            <Link href={`/movies/${movie.original_title}/${movie.id}`}>
+              <a>{movie.original_title}</a>
+            </Link>
+          </h4>
         </div>
       ))}
       <style jsx>{`
