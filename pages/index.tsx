@@ -1,23 +1,22 @@
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import HeadTitle from "../components/HeadTitle";
 
-export default function Home() {
-  const [movies, setMovies] = useState<any>();
+export default function Home({ movieData }) {
+  const router = useRouter();
 
-  useEffect(() => {
-    (async () => {
-      const response = await fetch(`/api/movies`);
-      const movieData = await response.json();
-      setMovies(movieData.results);
-    })();
-  }, []);
-
+  const handleMovieClick = (movieId: string) => {
+    router.push(`/movies/${movieId}`);
+  };
   return (
     <div className='container'>
       <HeadTitle title='Home' />
-      {!movies && <h4>Loading...</h4>}
-      {movies?.map((movie) => (
-        <div className='movie' key={movie.id}>
+      {!movieData && <h4>Loading...</h4>}
+      {movieData?.map((movie) => (
+        <div
+          onClick={() => handleMovieClick(movie.id)}
+          className='movie'
+          key={movie.id}
+        >
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
           <h4>{movie.title}</h4>
         </div>
@@ -28,6 +27,7 @@ export default function Home() {
           grid-template-columns: 1fr 1fr;
           padding: 20px;
           gap: 20px;
+          cursor: pointer;
         }
         .movie img {
           max-width: 100%;
@@ -45,4 +45,16 @@ export default function Home() {
       `}</style>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const { results: movieData } = await (
+    await fetch(`http://localhost:3000/api/movies`)
+  ).json();
+
+  return {
+    props: {
+      movieData,
+    },
+  };
 }
